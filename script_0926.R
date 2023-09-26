@@ -372,11 +372,33 @@ ggplot(irisl_lwa) +
     ),
     width = 0
   ) +
+  geom_text(
+    aes(x = 6,
+        y = 8,
+        label = l),
+    data = iris_label,
+    hjust = 1
+  ) +
+  geom_text(
+    aes(x = 0,
+        y = 0,
+        label = Part),
+    data = iris_label,
+    hjust = 0,
+    vjust = 0
+  ) +
   guides(shape = "none") +
   scale_x_continuous(xlabel,
                      limits = c(0, 6)) +
   scale_y_continuous(ylabel,
                      limits = c(0, 8)) +
+  scale_colour_viridis_d(end = 0.8,
+                         label = 
+                           c(
+                             "Iris setosa",
+                             "Iris versicolor",
+                             "Iris virginica"
+                           )) +
   facet_rep_grid(
     cols = vars(Part)
   ) +
@@ -386,7 +408,9 @@ ggplot(irisl_lwa) +
     legend.justification = c(1.0, 0.0),
     legend.title = element_blank(),
     legend.background = element_blank(),
+    legend.text = element_text(face = "italic"), 
     strip.background = element_blank(),
+    strip.text = element_blank(),
     panel.border = element_rect(color = "black",
                                 fill = NA,
                                 linewidth = 1),
