@@ -419,3 +419,99 @@ ggplot(irisl_lwa) +
 
 
 
+# 論文用図その3
+irist2 = irist |> 
+  pivot_longer(
+    cols = c(matches("Sepal"), matches("Petal"))
+  ) |> 
+  separate(name,
+           into = c("Part", "Measurement")) |> 
+  pivot_wider(
+    names_from = Measurement,
+    values_from = value
+  ) |> 
+  unnest(c(Length, Width, Area))
+
+xlabel = "Width (cm)"
+ylabel = "Length (cm)"
+
+iris_label = irisl_lwa |> 
+  expand(Part) |> 
+  mutate(l = c("(A)", "(B)"))
+
+ggplot(irisl_lwa) + 
+  geom_point(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      color = Species,
+      shape = Part
+    )
+  ) +
+  geom_errorbar(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      xmin = Width_m - Width_s,
+      xmax = Width_m + Width_s,
+      color = Species
+    ),
+    width = 0
+  ) +
+  geom_errorbar(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      ymin = Length_m - Length_s,
+      ymax = Length_m + Length_s,
+      color = Species
+    ),
+    width = 0
+  ) +
+  geom_text(
+    aes(x = 6,
+        y = 8,
+        label = l),
+    data = iris_label,
+    hjust = 1
+  ) +
+  geom_text(
+    aes(x = 0,
+        y = 0,
+        label = Part),
+    data = iris_label,
+    hjust = 0,
+    vjust = 0
+  ) +
+  guides(shape = "none") +
+  scale_x_continuous(xlabel,
+                     limits = c(0, 6)) +
+  scale_y_continuous(ylabel,
+                     limits = c(0, 8)) +
+  scale_colour_viridis_d(end = 0.8,
+                         label = 
+                           c(
+                             "Iris setosa",
+                             "Iris versicolor",
+                             "Iris virginica"
+                           )) +
+  facet_rep_grid(
+    cols = vars(Part)
+  ) +
+  theme_pubr() + # ggpubr パッケージの関数
+  theme(
+    legend.position = c(1.0, 0.0),
+    legend.justification = c(1.0, 0.0),
+    legend.title = element_blank(),
+    legend.background = element_blank(),
+    legend.text = element_text(face = "italic"), 
+    strip.background = element_blank(),
+    strip.text = element_blank(),
+    panel.border = element_rect(color = "black",
+                                fill = NA,
+                                linewidth = 1),
+    axis.line = element_line(linewidth = 0)
+  )
+
+
+
