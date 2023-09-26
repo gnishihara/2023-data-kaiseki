@@ -102,6 +102,30 @@ irisw |>
   )
 
 
+# pivoting data （ピボット)
+# matches() 変数を選ぶ
+irisl = irisw |> 
+  pivot_longer(
+    cols = c(matches("Sepal"),
+             matches("Petal"))
+  )
+
+# 文字変数の文字を分解する
+# "[._]": 正規表現 (regular expression) の一種
+irisl = irisl |> 
+  separate(name, 
+           sep = "[._]",
+           into = c("Part", 
+                    "Measurement",
+                    "Statistic"))
+
+# pivot_wider()
+# 平均値と標準偏差を分ける
+
+irisl2 = irisl |> 
+  pivot_wider(names_from = Statistic,
+              values_from = value)
+
 
 
 
