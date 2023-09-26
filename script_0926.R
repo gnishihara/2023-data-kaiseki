@@ -34,8 +34,8 @@ irist |>
     across(
       c(Sepal.Length, Petal.Length),
       list(m = mean)
-      )
     )
+  )
 
 # group化と across() の使い方,変数名の指定,
 # 平均値、標準偏差を同時に求める
@@ -126,19 +126,143 @@ irisl2 = irisl |>
   pivot_wider(names_from = Statistic,
               values_from = value)
 
+# ggplot の図
+ylabel = "Value"
+ggplot(irisl2) + 
+  geom_point(
+    aes(
+      x = Species,
+      y = m,
+      color = Part,
+      shape = Measurement
+    )) +
+  scale_y_continuous(ylabel) +
+  facet_grid(
+    rows = vars(Part),
+    cols = vars(Measurement)
+  )
 
+# ggplot の図
+# エラーバーをつける
+ylabel = "Value"
+ggplot(irisl2) + 
+  geom_point(
+    aes(
+      x = Species,
+      y = m,
+      color = Part,
+      shape = Measurement
+    )) +
+  geom_errorbar(
+    aes(
+      x = Species,
+      ymin = m - s,
+      ymax = m + s,
+      color = Part
+    ),
+    width = 0
+  ) + 
+  scale_y_continuous(ylabel) +
+  facet_grid(
+    rows = vars(Part),
+    cols = vars(Measurement)
+  )
 
+# ggplot の図
+# エラーバーをつける
+# 凡例を外す
+ylabel = "Value"
+ggplot(irisl2) + 
+  geom_point(
+    aes(
+      x = Species,
+      y = m,
+      color = Part,
+      shape = Measurement
+    )) +
+  geom_errorbar(
+    aes(
+      x = Species,
+      ymin = m - s,
+      ymax = m + s,
+      color = Part
+    ),
+    width = 0
+  ) + 
+  scale_y_continuous(ylabel) +
+  guides(color = "none",
+         shape = "none") +
+  facet_grid(
+    rows = vars(Part),
+    cols = vars(Measurement)
+  )
 
+# Area と Length/Width のデータを分ける
+irisl2_area = 
+  irisl2 |> 
+  filter(Measurement == "Area")
 
+irisl2_lw = 
+  irisl2 |> 
+  filter(Measurement != "Area")
 
+# Area と Length/Width のデータを分ける
+# str_detect() をつかう
+irisl2 |> 
+  filter(
+    str_detect(
+      Measurement,
+      "Wi"
+    ))
 
+# irisl2_lw の図
+# Measurement を使って、二つの新しい
+# 変数をつくる
+irisl |> 
+  pivot_wider(
+    names_from = Measurement,
+    values_from = value
+  )
 
+irisl_lwa = irisl |> 
+  pivot_wider(
+    names_from = c(Measurement, Statistic),
+    values_from = value
+  )
 
-
-
-
-
-
-
+ggplot(irisl_lwa) + 
+  geom_point(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      color = Species,
+      shape = Part
+    )
+  ) +
+  geom_errorbar(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      xmin = Width_m - Width_s,
+      xmax = Width_m + Width_s,
+      color = Species
+    ),
+    width = 0
+  ) +
+  geom_errorbar(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      ymin = Length_m - Length_s,
+      ymax = Length_m + Length_s,
+      color = Species
+    ),
+    width = 0
+  ) +
+  guides(color = "none", 
+         shape = "none") +
+  facet_grid(
+    cols = vars(Part)
+  )
 
 
