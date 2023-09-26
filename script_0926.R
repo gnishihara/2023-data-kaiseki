@@ -441,6 +441,15 @@ iris_label = irisl_lwa |>
 
 ggplot(irisl_lwa) + 
   geom_point(
+    aes(x = Width,
+        y = Length,
+        color = Species,
+        shape = Part),
+    data = irist2,
+    size = 1,
+    alpha = 0.25
+  ) + 
+  geom_point(
     aes(
       x = Width_m,
       y = Length_m,
@@ -513,5 +522,9 @@ ggplot(irisl_lwa) +
     axis.line = element_line(linewidth = 0)
   )
 
-
+filename = "iris-plot.pdf"
+ggsave(filename,
+       width = 160,
+       height = 80, 
+       units = "mm")
 
