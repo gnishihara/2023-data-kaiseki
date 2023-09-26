@@ -280,7 +280,6 @@ ggplot(irisl_lwa) +
 
 
 # 論文用図
-# 
 
 xlabel = "Width (cm)"
 ylabel = "Length (cm)"
@@ -330,7 +329,69 @@ ggplot(irisl_lwa) +
     legend.background = element_blank(),
     strip.background = element_blank(),
     panel.border = element_rect(color = "black",
+                                fill = NA,
                                 linewidth = 1),
     axis.line = element_line(linewidth = 0)
   )
+
+# 論文用図その2
+
+xlabel = "Width (cm)"
+ylabel = "Length (cm)"
+
+iris_label = irisl_lwa |> 
+  expand(Part) |> 
+  mutate(l = c("(A)", "(B)"))
+
+ggplot(irisl_lwa) + 
+  geom_point(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      color = Species,
+      shape = Part
+    )
+  ) +
+  geom_errorbar(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      xmin = Width_m - Width_s,
+      xmax = Width_m + Width_s,
+      color = Species
+    ),
+    width = 0
+  ) +
+  geom_errorbar(
+    aes(
+      x = Width_m,
+      y = Length_m,
+      ymin = Length_m - Length_s,
+      ymax = Length_m + Length_s,
+      color = Species
+    ),
+    width = 0
+  ) +
+  guides(shape = "none") +
+  scale_x_continuous(xlabel,
+                     limits = c(0, 6)) +
+  scale_y_continuous(ylabel,
+                     limits = c(0, 8)) +
+  facet_rep_grid(
+    cols = vars(Part)
+  ) +
+  theme_pubr() + # ggpubr パッケージの関数
+  theme(
+    legend.position = c(1.0, 0.0),
+    legend.justification = c(1.0, 0.0),
+    legend.title = element_blank(),
+    legend.background = element_blank(),
+    strip.background = element_blank(),
+    panel.border = element_rect(color = "black",
+                                fill = NA,
+                                linewidth = 1),
+    axis.line = element_line(linewidth = 0)
+  )
+
+
 
