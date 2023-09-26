@@ -48,6 +48,59 @@ irist |>
     )
   )
 
+# group化と across() の使い方,変数名の指定,
+# 平均値を同時に求める。
+# すべての変数を処理する
+irist |> 
+  group_by(Species) |> 
+  summarise(
+    across(
+      c(Sepal.Length, Petal.Length,
+        Sepal.Width, Petal.Width,
+        Sepal.Area, Petal.Area),
+      list(m = mean)
+    )
+  )
+
+# group化と across() の使い方,変数名の指定,
+# 平均値を同時に求める。
+# すべての変数を処理する (everything())
+irist |> 
+  group_by(Species) |> 
+  summarise(
+    across(
+      everything(),
+      list(m = mean)
+    )
+  )
+
+# group化と across() の使い方,変数名の指定,
+# 平均値, 標準偏差を同時に求める。
+# すべての変数を処理する (everything())
+irisw = irist |> 
+  group_by(Species) |> 
+  summarise(
+    across(
+      everything(),
+      list(m = mean, s = sd)
+    )
+  )
+
+# pivoting data （ピボット)
+# 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
