@@ -77,6 +77,97 @@ irist |>
   filter(!str_detect(Species, "versicolor")) |> 
   t.test(PL ~ Species, data = _)
 
+# パイプなしの t 検定 #####
+# virginica と versicolor のt検定
+data_ver_vir = irist |> 
+  filter(!str_detect(Species, "setosa")) 
+t.test(PL ~ Species, data = data_ver_vir)
+
+# versicolor と setosa のt検定
+data_ver_set = irist |> 
+  filter(!str_detect(Species, "virginica")) 
+t.test(PL ~ Species, data = data_ver_set)
+
+# virginica と setosa のt検定
+data_vir_set = irist |> 
+  filter(!str_detect(Species, "versicolor")) 
+t.test(PL ~ Species, data = data_vir_set)
+
+# 多重比較
+
+# setosa との比較のみ
+model1 = lm(PL ~ Species, data = irist)
+anova(model1)
+# F(2, 147) = 1180.2, P < 0.0001
+summary(model1)
+
+# Tukey HSD 
+emmeans(model1, 
+        specs = pairwise ~ Species)
+
+# データの標準偏差と標準誤差
+
+se = function(x) {
+  n = length(x)
+  sd(x) / sqrt(n - 1)
+}
+
+irist |> 
+  group_by(Species) |> 
+  summarise(PL_mean = mean(PL),
+            PL_se = se(PL))
+
+# 残差 (residuals) とは
+
+tmp = irist |> 
+  filter(str_detect(Species, "virg")) |> 
+  slice_sample(n = 10)
+
+ggplot(tmp) +
+  geom_point(
+    aes(
+      x = PL,
+      y = PW
+    )
+  ) +
+  geom_smooth(
+    aes(
+      x = PL,
+      y = PW
+    ),
+    method = "lm",
+    formula = y ~ x,
+    se = FALSE
+  )
+
+residuals(model1)
+
+irist = irist |> 
+  mutate(resid = residuals(model1),
+         fit   = fitted(model1))
+
+ggplot(irist) + 
+  geom_point(
+    aes(
+      x = Species,
+      y = resid
+    ),
+    position = position_jitter(width = 0.1),
+    alpha = 0.2
+  )
+
+# 残差プロットによる診断図
+plot(model1)
+
+
+
+
+
+
+
+
+
+
 
 
 
