@@ -115,7 +115,47 @@ ggplot(dataset) +
     rows = vars(station)
   ) +
   scale_x_continuous(xlabel) +
-  scale_y_continuous(parse(text = ylabel))
+  scale_y_continuous(parse(text = ylabel)) +
+  guides(color = "none",
+         shape = "none")
+
+xlabel = "Depth (m)"
+ylabel = "Salinity (PSU)"
+ggplot(dataset) + 
+  geom_point(
+    aes(
+      x = depth,
+      y = salinity,
+      color = id,
+      shape = station
+    )
+  ) +
+  facet_rep_grid(
+    rows = vars(station)
+  ) +
+  scale_x_continuous(xlabel) +
+  scale_y_continuous(ylabel) +
+  guides(color = "none",
+         shape = "none")
+
+xlabel = "Salinity (PSU)"
+ylabel = "'Temperature'~'('*degree*C*')'"
+ggplot(dataset) + 
+  geom_point(
+    aes(
+      x = salinity,
+      y = temperature,
+      color = id,
+      shape = station
+    )
+  ) +
+  facet_rep_grid(
+    rows = vars(station)
+  ) +
+  scale_x_continuous(xlabel) +
+  scale_y_continuous(parse(text = ylabel)) +
+  guides(color = "none",
+         shape = "none")
 
 
 ########
