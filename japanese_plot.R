@@ -7,6 +7,18 @@ library(ggpubr)
 library(lemon)
 library(showtext)
 
+google_fonts("Noto Sans JP")
+font_add_google("Noto Sans JP",
+                family = "notosansjp")
+
+# theme_gray() をデフォルトの
+# ggplot テーマにする。
+theme_gray(base_size = 12,
+           base_family = "notosansjp") |> 
+  theme_set()
+
+showtext_auto() # 必ず一度だけ、実行すること
+
 irist = iris |> as_tibble()
 
 xlabel = "花びらの長さ (cm)"
