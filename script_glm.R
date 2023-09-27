@@ -43,7 +43,6 @@ anova(model1, test = "LRT") # 尤度比検定
 
 
 # データの図に、モデルを当てはめる。
-
 pdata = irist |> 
   expand(PW = seq(min(PW), max(PW), length = 11))
 tmp = predict(model1, newdata = pdata, se = TRUE) |> 
@@ -67,18 +66,3 @@ ggplot(irist) +
     color = "orangered",
     linewidth = 1
   )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
