@@ -6,6 +6,7 @@ library(tidyverse)
 library(ggpubr)
 library(lemon)
 library(showtext)
+library(magick)
 
 google_fonts("Noto Sans JP")
 font_add_google("Noto Sans JP",
@@ -31,4 +32,16 @@ ggplot(irist) +
   ) +
   scale_x_continuous(xlabel) +
   scale_y_continuous(ylabel)
+
+filename = "iris.pdf"
+pngname = "iris.png"
+
+ggsave(filename = filename,
+       width = 80,
+       height = 80, 
+       units = "mm")
+
+img = image_read_pdf(filename, density = 600)
+image_write(image = img,
+            path = pngname)
 
