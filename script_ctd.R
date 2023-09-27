@@ -157,11 +157,27 @@ ggplot(dataset) +
   guides(color = "none",
          shape = "none")
 
-
-########
-
-
-
+# 軸の転換
+xlabel = "Depth (m)"
+ylabel = "Salinity (PSU)"
+ggplot(dataset) + 
+  geom_point(
+    aes(
+      x = depth,
+      y = salinity,
+      color = id,
+      shape = station
+    )
+  ) +
+  facet_rep_grid(
+    cols = vars(station)
+  ) +
+  scale_x_continuous(xlabel,
+                     trans = "reverse") +
+  scale_y_continuous(ylabel) +
+  guides(color = "none",
+         shape = "none") +
+  coord_flip()
 
 
 
