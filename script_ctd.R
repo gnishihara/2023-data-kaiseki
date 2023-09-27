@@ -80,8 +80,50 @@ read_ctd_data(filename = filename) # あと１６回繰り返して実行する
 
 filenames = dir("./data", full.names = TRUE)
 dataset = tibble(filenames)
-dataset |> 
+
+dataset = dataset |> 
   mutate(data = map(filenames, read_ctd_data))
+
+dataset = dataset |> 
+  mutate(filenames = basename(filenames)) |> 
+  separate(filenames, 
+           into = c("a", "b",
+                    "station", 
+                    "id", 
+                    "date",
+                    "z")) |> 
+  select(station, id, date, data)
+
+dataset
+# map() の説明
+
+irist = iris |> as_tibble()
+# Species ごとに、分解する
+set = irist |> filter(str_detect(Species, "setosa"))
+vir = irist |> filter(str_detect(Species, "virg"))
+ver = irist |> filter(str_detect(Species, "vers"))
+
+# Species ごとに回帰曲線を当てはめる
+model_set = lm(Petal.Length ~ Petal.Width, data = set)
+model_vir = lm(Petal.Length ~ Petal.Width, data = vir)
+model_ver = lm(Petal.Length ~ Petal.Width, data = ver)
+
+get_lm = function(data) {
+  lm(Petal.Length ~ Petal.Width, data = data)
+}
+
+irist |> 
+  group_nest(Species) |> 
+  mutate(model = map(data, get_lm))
+
+
+
+
+
+
+
+
+
 
 # rooturl = "https://github.com/gnishihara/2023-data-kaiseki/blob/main/data/"
 # f1 = "CTD_Rseminer_st1_A_230926.csv"
