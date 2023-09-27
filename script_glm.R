@@ -19,3 +19,65 @@ irist = irist |>
          PL = Petal.Length,
          PW = Petal.Width,
          Species)
+
+ggplot(irist) +
+  geom_point(
+    aes(
+      x = PW,
+      y = PL
+    )
+    )
+#################################
+# PW と PL の回帰曲線
+# mu = b0 + b1 x PW (モデル定義)
+# PL ~ N(mu, sigma) (分布の定義)
+#################################
+model1 = glm(PL ~ PW, 
+             data = irist,
+             family = gaussian("identity"))
+plot(model1)
+summary(model1) # 係数表 (coefficients)
+anova(model1)   # 逸脱度表 (deviance)
+anova(model1, test = "F") # F検定
+anova(model1, test = "LRT") # 尤度比検定
+
+
+# データの図に、モデルを当てはめる。
+
+pdata = irist |> 
+  expand(PW = seq(min(PW), max(PW), length = 11))
+tmp = predict(model1, newdata = pdata, se = TRUE) |> 
+  as_tibble()
+pdata = bind_cols(pdata, tmp)
+
+ggplot(irist) +
+  geom_point(
+    aes(
+      x = PW,
+      y = PL
+    )
+  ) +
+  geom_line(
+    aes(
+      x = PW,
+      y = fit
+    ),
+    data = pdata,
+    color = "orangered",
+    linewidth = 1
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
