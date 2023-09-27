@@ -54,7 +54,8 @@ ggplot(irist) +
   geom_point(
     aes(
       x = PW,
-      y = PL
+      y = PL,
+      color = Species
     )
   ) +
   geom_line(
