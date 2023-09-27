@@ -30,14 +30,16 @@ ctd01 = ctd01 |>
          id = "A",
          date = "230926")
 
-# 作業の効率化
+# 作業の効率化 ########################################
+
+filename = "./data/CTD_Rseminer_st1_A_230926.csv"
 
 ## ファイル名からステーション、観測者ID、日付を抽出する
 tmp = basename(filename)
+## 正規表現を用いてする
 station = str_extract(tmp, "st[0-9]")
-id = str_extract(tmp, "_[A-Z]_") |> str_extract("[A-Z]")
-date = str_extract(tmp, "[0-9]{6}")
-
+id      = str_extract(tmp, "_[A-Z]_") |> str_extract("[A-Z]")
+date    = str_extract(tmp, "[0-9]{6}")
 
 # データ読み込み関数
 read_ctd_data = function(filename) {
@@ -57,6 +59,24 @@ read_ctd_data = function(filename) {
            date = date)
 }
 
+filename = "./data/CTD_Rseminer_st1_A_230926.csv"
+ctd01a = read_ctd_data(filename = filename)
+
+filename = "./data/CTD_Rseminer_st1_B_230926.csv"
+ctd01b = read_ctd_data(filename = filename) # あと１６回繰り返して実行する
+
+######################################################
+# さらに効率のいい方法
+# データ読み込み関数
+read_ctd_data = function(filename) {
+  ctd01 = read_csv(file = filename, skip = 28)
+  ctd01 |> 
+    select(depth = `水深 (m)`,
+           temperature = `水温 (℃)` ,
+           salinity = `塩分濃度 (PSS)`)
+}
+filename = "./data/CTD_Rseminer_st1_B_230926.csv"
+read_ctd_data(filename = filename) # あと１６回繰り返して実行する
 
 
 
