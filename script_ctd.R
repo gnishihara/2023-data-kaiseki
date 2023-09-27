@@ -79,8 +79,9 @@ filename = "./data/CTD_Rseminer_st1_B_230926.csv"
 read_ctd_data(filename = filename) # あと１６回繰り返して実行する
 
 filenames = dir("./data", full.names = TRUE)
-tibble(filenames)
-
+dataset = tibble(filenames)
+dataset |> 
+  mutate(data = map(filenames, read_ctd_data))
 
 # rooturl = "https://github.com/gnishihara/2023-data-kaiseki/blob/main/data/"
 # f1 = "CTD_Rseminer_st1_A_230926.csv"
