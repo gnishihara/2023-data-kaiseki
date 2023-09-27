@@ -59,14 +59,17 @@ irist |>
 # Null Hypothesis: There are no 
 # differences in the mean PL among species
 
+# t 検定を３回しています。
 # virginica と versicolor のt検定
+# %>% の placeholder は　.
+# |>  の placeholder は　_
 irist |> 
   filter(!str_detect(Species, "setosa")) |> 
   t.test(PL ~ Species, data = _)
 
 # versicolor と setosa のt検定
 irist |> 
-  filter(!str_detect(Species, "virginca")) |> 
+  filter(!str_detect(Species, "virginica")) |> 
   t.test(PL ~ Species, data = _)
 
 # virginica と setosa のt検定
@@ -78,12 +81,3 @@ irist |>
 
 
 
-
-
-
-
-
-
-
-  
-  
