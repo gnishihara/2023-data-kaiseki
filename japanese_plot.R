@@ -7,3 +7,16 @@ library(ggpubr)
 library(lemon)
 library(showtext)
 
+irist = iris |> as_tibble()
+
+xlabel = "花びらの長さ"
+ylabel = "花びらの幅"
+
+ggplot(irist) + 
+  geom_point(
+    aes(x = Petal.Length,
+        y = Petal.Width)
+  ) +
+  scale_x_continuous(xlabel) +
+  scale_y_continuous(ylabel)
+
