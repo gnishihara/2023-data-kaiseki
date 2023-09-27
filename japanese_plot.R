@@ -9,8 +9,8 @@ library(showtext)
 
 irist = iris |> as_tibble()
 
-xlabel = "花びらの長さ"
-ylabel = "花びらの幅"
+xlabel = "花びらの長さ (cm)"
+ylabel = "花びらの幅 (cm)"
 
 ggplot(irist) + 
   geom_point(
