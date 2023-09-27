@@ -94,7 +94,37 @@ dataset = dataset |>
                     "z")) |> 
   select(station, id, date, data)
 
-dataset
+dataset = dataset |> 
+  unnest(data)
+
+# データの作図
+# 水深たい水温
+
+xlabel = "Depth (m)"
+ylabel = "'Temperature'~'('*degree*C*')'"
+ggplot(dataset) + 
+  geom_point(
+    aes(
+      x = depth,
+      y = temperature,
+      color = id,
+      shape = station
+    )
+  ) +
+  facet_rep_grid(
+    rows = vars(station)
+  ) +
+  scale_x_continuous(xlabel) +
+  scale_y_continuous(parse(text = ylabel))
+
+
+########
+
+
+
+
+
+
 # map() の説明
 
 irist = iris |> as_tibble()
