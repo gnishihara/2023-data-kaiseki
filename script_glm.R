@@ -111,15 +111,18 @@ pdatavir = vir |> expand(PW = seq(min(PW), max(PW), length = 11))
 pdataver = ver |> expand(PW = seq(min(PW), max(PW), length = 11))
 
 tmpset = predict(modelset, newdata = pdataset, se = TRUE) |> as_tibble()
-tmpver = predict(modelvir, newdata = pdatavir, se = TRUE) |> as_tibble()
-tmpvir = predict(modelver, newdata = pdataver, se = TRUE) |> as_tibble()
+tmpvir = predict(modelvir, newdata = pdatavir, se = TRUE) |> as_tibble()
+tmpver = predict(modelver, newdata = pdataver, se = TRUE) |> as_tibble()
 
 pdataset = bind_cols(pdataset, tmpset)
-pdataver = bind_cols(pdataver, tmpver)
 pdatavir = bind_cols(pdatavir, tmpvir)
+pdataver = bind_cols(pdataver, tmpver)
 
+pdataset = pdataset |> mutate(Species = "setosa")
+pdatavir = pdatavir |> mutate(Species = "virginica")
+pdataver = pdataver |> mutate(Species = "versicolor")
 
-
+pdata = bind_rows(pdataset, pdatavir, pdataver)
 
 ggplot(irist) +
   geom_point(
@@ -132,10 +135,10 @@ ggplot(irist) +
   geom_line(
     aes(
       x = PW,
-      y = fit
+      y = fit,
+      color = Species
     ),
     data = pdata,
-    color = "orangered",
     linewidth = 1
   )
 
