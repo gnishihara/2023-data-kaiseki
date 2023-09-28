@@ -403,6 +403,7 @@ ggplot(gala) +
 summary(modelNB02)
 
 modelNB03 = MASS::glm.nb(NS ~ logArea, data = gala, link = "log")
+modelNBNULL = MASS::glm.nb(NS ~ 1, data = gala, link = "log") # 帰無モデル
 
 
 # モデル選択：AIC の低いモデルがいい
@@ -472,6 +473,50 @@ ggplot(gala) +
     data= pdata
   ) +
   guides(color = "none")
+
+modelNB02
+
+# Materials and Methods
+# ... 
+# A negative binomial GLM was used to analyze 
+# the data. The link function (g()) was the natural 
+# log function (Eq. 1). 
+# 
+# eta = b0 + b1 x1 + b2 x2
+# mu = g(eta)
+# eta ~ Neg. Bin. (mu, theta)
+#
+# x1 is the log Area, x2 is the log distance,
+# b0 is the model intercept, b1 is the coefficient
+# for x1, b2 is the coefficient for x2. 
+# Diagnostic plots were used to examine the model
+# for goodness of fit. The GLM was fitted using 
+# R version 4.3.1 (R Core Team, 2023).
+
+# R の引用：
+citation()
+
+AIC(modelNBNULL, modelNB02)
+anova(modelNBNULL, modelNB02, test = "LRT")
+
+# Results (AIC version)
+# The model (Eq. 1) was compared to a null model 
+# using AIC. The AIC of the null model was 261.4,
+# whereas the AIC of Eq. 1 was 230.9. Therefore, 
+# Eq. 1 sufficiently explained the relationship 
+# between the number of species to the two explanatory
+# variables (log Area and log distance).
+# 
+# The coefficient for log Area was 0.367 ± 0.0417 
+# (z = 8.83; P < 0.0001) and the coefficient for
+# log Distance was -0.149 ± 0.086 (z = -1.74; 
+# P = 0.0828). The model intercept was 3.358 ± 0.222
+# (z = 15.12; P < 0.0001). 
+
+
+
+
+
 
 
 
