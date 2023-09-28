@@ -94,3 +94,43 @@ ggplot(dset) +
     data = pdata
   )
 
+summary(m1)
+summary(m2)
+AIC(m1, m2)
+
+appraise(m2)
+
+# それぞれの Plant に s() をあてはめる
+
+m3 = gam(uptake ~ s(conc, k = 6, by = Plant) + Plant,
+         data = dset)
+summary(m3)
+
+pdata = dset |> 
+  expand(Plant = Plant,
+         conc = seq(min(conc),
+                    max(conc),
+                    length = 11))
+tmp = predict(m3, newdata = pdata, se = T) |> as_tibble()
+pdata = bind_cols(pdata, tmp)
+pdata
+
+ggplot(dset) + 
+  geom_point(
+    aes(
+      x = conc,
+      y = uptake, 
+      color = Plant
+    )
+  ) +
+  geom_line(
+    aes(
+      x = conc,
+      y = fit,
+      color = Plant
+    ),
+    data = pdata
+  )
+
+# conc の値の桁数があまり違うので、モデルの当てはまりがわるい。
+# 
