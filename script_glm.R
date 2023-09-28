@@ -151,13 +151,18 @@ ggplot(irist) +
 model2 = glm(PL ~ PW * Species, 
              data = irist,
              family = gaussian("identity"))
-plot(model2)
+plot(model2) # 診断図
 summary(model2)
 anova(model2, test = "F")
 
+# 切片の多重比較
+emmeans(model2, 
+        specs = pairwise ~ Species)
 
-
-
+# 傾きの多重比較
+emtrends(model2,
+         specs = pairwise ~ Species,
+         var = "PW")
 
 
 
