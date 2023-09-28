@@ -142,6 +142,20 @@ ggplot(irist) +
     linewidth = 1
   )
 
+# #############################
+# 一般化線形モデル
+# mu = b0_s + b1_s x PW
+# PL ~ N(mu, sigma)
+# #############################
+
+model2 = glm(PL ~ PW * Species, 
+             data = irist,
+             family = gaussian("identity"))
+plot(model2)
+summary(model2)
+anova(model2, test = "F")
+
+
 
 
 
