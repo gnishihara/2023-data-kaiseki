@@ -301,7 +301,131 @@ summary(modelPF3)
 # 負の二項分布 一般化線形モデル
 # Negative Binomial GLM
 ####################################
+modelNB01 = MASS::glm.nb(NS ~ logArea + logDist + logAnear,
+                         data = gala,
+                         link = "log")
 
+gala = gala |> 
+  mutate(qres = qresiduals(modelNB01),
+         fit = fitted(modelNB01))
+
+# ランダム化残差と期待値の図
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = qres
+    )
+  ) +
+  scale_y_continuous(limits = c(-2, 2))
+
+# QQPLOT
+ggplot(gala) +
+  geom_qq(
+    aes(
+      sample = qres
+    )
+  ) +
+  geom_qq_line(
+    aes(
+      sample = qres
+    ),
+    linetype = "dashed", color = "grey50"
+  )
+
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  ) +
+  geom_smooth(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    ),
+    se = F
+  )
+
+
+summary(modelNB01)
+#############
+
+modelNB02 = MASS::glm.nb(NS ~ logArea + logDist,
+                         data = gala,
+                         link = "log")
+
+gala = gala |> 
+  mutate(qres = qresiduals(modelNB02),
+         fit = fitted(modelNB02))
+
+# ランダム化残差と期待値の図
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = qres
+    )
+  ) +
+  scale_y_continuous(limits = c(-2, 2))
+
+# QQPLOT
+ggplot(gala) +
+  geom_qq(
+    aes(
+      sample = qres
+    )
+  ) +
+  geom_qq_line(
+    aes(
+      sample = qres
+    ),
+    linetype = "dashed", color = "grey50"
+  )
+
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  ) +
+  geom_smooth(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    ),
+    se = F
+  )
+
+
+summary(modelNB02)
+
+modelNB03 = MASS::glm.nb(NS ~ logArea, data = gala, link = "log")
+
+
+# モデル選択：AIC の低いモデルがいい
+AIC(modelNB01, modelNB02, modelNB03)
+
+pdata = gala |> 
+  expand(Area = seq(min(Area), max(Area), length = 21),
+         Dist = seq(min(Dist), max(Dist),length = 3)) |> 
+  mutate(logArea = log(Area),
+         logDist = log(Dist))
+
+tmp = predict(modelNB02, newdata = pdata, se = T)
+pdata = bind_cols(pdata, tmp)
+
+ggplot(gala) + 
+  geom_point(aes(x = logArea, y = NS)) +
+  geom_line(
+    aes(
+      x = logArea,
+      y = fit,
+      color = Dist
+    )
+  )
 
 
 
