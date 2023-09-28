@@ -16,19 +16,19 @@
 
 **doubs_env.csv** 
 
-Code | 変数
+Code | 変数 |
 ------------
-das | 距離 
-alt | 高度
-pen | 勾配
-deb | 流量
-pH  | pH
-dur | Ca 濃度
-pho | P 濃度
-nit | NO_3_ 濃度
-amn | NH_4_ 濃度
-oxy | O_2_ 濃度
-dbo | BOD
+das | 距離           |
+alt | 高度          |
+pen | 勾配          |
+deb | 流量          |
+pH  | pH          |
+dur | Ca 濃度          |
+pho | P 濃度          |
+nit | NO_3_ 濃度          |
+amn | NH_4_ 濃度          |
+oxy | O_2_ 濃度            |
+dbo | BOD                  |
 -------------
 **R の最新バージョンは ver. 4.3.1**
 
