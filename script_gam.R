@@ -43,89 +43,54 @@ tmp = predict(m1,
               newdata = pdata,
               se = T) |> as_tibble()
 pdata = bind_cols(pdata, tmp)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+pdata
+
+ggplot(dset) + 
+  geom_point(
+    aes(
+      x = conc,
+      y = uptake,
+      color = Plant
+    )
+  ) +
+  geom_line(
+    aes(
+      x = conc,
+      y = fit
+    ),
+    data = pdata
+  )
+
+
+
+# くねくねさせる
+# ノット (knot) の数を指定する
+
+m2 = gam(uptake ~ s(conc, k = 6), 
+         data = dset)
+pdata = dset  |> 
+  expand(conc = seq(min(conc),
+                    max(conc),
+                    length = 21))
+tmp = predict(m2, 
+              newdata = pdata,
+              se = T) |> as_tibble()
+pdata = bind_cols(pdata, tmp)
+pdata
+
+ggplot(dset) + 
+  geom_point(
+    aes(
+      x = conc,
+      y = uptake,
+      color = Plant
+    )
+  ) +
+  geom_line(
+    aes(
+      x = conc,
+      y = fit
+    ),
+    data = pdata
+  )
 
