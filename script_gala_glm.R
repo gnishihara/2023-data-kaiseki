@@ -8,6 +8,7 @@ library(tidyverse)
 library(ggpubr)
 library(lemon)
 library(emmeans)
+library(statmod)
 
 # alr4 パッケージの galapagos データ
 data(galapagos, package = "alr4")
@@ -49,7 +50,123 @@ modelNF = glm(NS ~ Anear + Area + Dist + DistSC + Elevation,
 plot(modelNF)
 
 
+###############################################
+# eta = Anear + Area + Dist + DistSC + Elevation
+# mu ~ Poisson(eta)
+# NS = exp(mu)
+###############################################
+
+modelPF = glm(NS ~ Anear + Area + Dist + DistSC + Elevation,
+              data = gala,
+              family = poisson("log"))
+
+gala = gala |> 
+  mutate(qres = qresid(modelPF),
+         fit = fitted(modelPF))
+gala |> 
+  select(NS, qres, fit) |> 
+  print(n = 25)
+
+# ランダム化残差たい期待値
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = qres
+    )
+  ) +
+  scale_y_continuous(limits = c(-10, 10))
+
+# qqplot
+
+ggplot(gala) + 
+  geom_qq(
+    aes(
+      sample = qres
+    )
+  ) +
+  geom_qq_line(
+    aes(
+      sample = qres
+    ),
+    linetype = "dashed",
+    color = "grey50"
+  )
+
+# Scale-location
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  ) +
+  geom_smooth(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  )
 
 
 
+# モデルの改良
+summary(modelPF)
+# multi-collinearity
+gala |>
+  select(-qres, -fit) |> 
+  cor()
+
+# DistSC, Anear をモデルから外す
+modelP01 = glm(NS ~ Area + Dist + Elevation,
+               data = gala,
+               family = poisson("log"))
+
+gala = gala |> 
+  mutate(qres = qresid(modelP01),
+         fit = fitted(modelP01))
+gala |> 
+  select(NS, qres, fit) |> 
+  print(n = 25)
+
+# ランダム化残差たい期待値
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = qres
+    )
+  ) +
+  scale_y_continuous(limits = c(-10, 10))
+
+# qqplot
+
+ggplot(gala) + 
+  geom_qq(
+    aes(
+      sample = qres
+    )
+  ) +
+  geom_qq_line(
+    aes(
+      sample = qres
+    ),
+    linetype = "dashed",
+    color = "grey50"
+  )
+
+# Scale-location
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  ) +
+  geom_smooth(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  )
 
