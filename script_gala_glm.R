@@ -511,7 +511,21 @@ anova(modelNBNULL, modelNB02, test = "LRT")
 # (z = 8.83; P < 0.0001) and the coefficient for
 # log Distance was -0.149 ± 0.086 (z = -1.74; 
 # P = 0.0828). The model intercept was 3.358 ± 0.222
-# (z = 15.12; P < 0.0001). 
+# (z = 15.12; P < 0.0001). Theta for the negative
+# binomial distribution was 2.574 ± 0.824.
+
+# Results (LRT version)
+# The model (Eq. 1) was compared to a null model 
+# using the log-likelihood ratio test. 
+# The log-likelihood ratio was 34.4 (P < 0.0001),
+# rejecting the null model.
+# 
+# The coefficient for log Area was 0.367 ± 0.0417 
+# (z = 8.83; P < 0.0001) and the coefficient for
+# log Distance was -0.149 ± 0.086 (z = -1.74; 
+# P = 0.0828). The model intercept was 3.358 ± 0.222
+# (z = 15.12; P < 0.0001). Theta for the negative
+# binomial distribution was 2.574 ± 0.824.
 
 
 
