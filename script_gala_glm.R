@@ -195,11 +195,115 @@ gala |>
             min = min(value),
             max = max(value))
 
+########################################
 # Area, Dist, Elev を log() 変換してから、
 # 解析する
 
 gala = gala |> mutate(logArea = log(Area),
                logDist = log(Dist),
                logElev = log(Elevation))
+
+modelP02 = glm(NS ~ logArea + logDist + logElev,
+               data = gala,
+               family = poisson("log"))
+
+gala = gala |> 
+  mutate(qres = qresid(modelP02),
+         fit = fitted(modelP02))
+gala |> 
+  select(NS, qres, fit) |> 
+  print(n = 25)
+
+# ランダム化残差たい期待値
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = qres
+    )
+  ) +
+  scale_y_continuous(limits = c(-10, 10))
+
+# qqplot
+
+ggplot(gala) + 
+  geom_qq(
+    aes(
+      sample = qres
+    )
+  ) +
+  geom_qq_line(
+    aes(
+      sample = qres
+    ),
+    linetype = "dashed",
+    color = "grey50"
+  )
+
+# Scale-location
+ggplot(gala) + 
+  geom_point(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  ) +
+  geom_smooth(
+    aes(
+      x = fit,
+      y = sqrt(abs(qres))
+    )
+  )
+
+summary(modelP02)
+
+modelP03 = glm(NS ~ logArea + logDist,
+               data = gala,
+               family = poisson("log"))
+summary(modelP03)
+
+modelP04 = glm(NS ~ logArea + Dist,
+               data = gala,
+               family = poisson("log"))
+summary(modelP04)
+
+modelP05 = glm(NS ~ logArea + Dist + Anear,
+               data = gala,
+               family = poisson("log"))
+summary(modelP05)
+#############
+
+
+gala = gala |> 
+  mutate(logArea = log(Area),
+         logDist = log(Dist),
+         logElev = log(Elevation),
+         logAnear = log(Anear))
+
+modelPF = glm(NS ~ Area + Dist + Elevation + Anear,
+               data = gala,
+               family = poisson("log"))
+car::vif(modelPF)
+
+modelPF2 = glm(NS ~ Area + Dist + Anear,
+              data = gala,
+              family = poisson("log"))
+car::vif(modelPF2)
+summary(modelPF2)
+
+modelPF3 = glm(NS ~ logArea + logDist + logAnear,
+               data = gala,
+               family = poisson("log"))
+car::vif(modelPF3)
+summary(modelPF3)
+
+####################################
+# 負の二項分布 一般化線形モデル
+# Negative Binomial GLM
+####################################
+
+
+
+
 
 
