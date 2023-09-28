@@ -406,26 +406,72 @@ modelNB03 = MASS::glm.nb(NS ~ logArea, data = gala, link = "log")
 
 
 # モデル選択：AIC の低いモデルがいい
+# このとき、modelNB02 を選ぶ
 AIC(modelNB01, modelNB02, modelNB03)
 
 pdata = gala |> 
-  expand(Area = seq(min(Area), max(Area), length = 21),
+  expand(logArea = seq(min(logArea), max(logArea), length = 21),
          Dist = seq(min(Dist), max(Dist),length = 3)) |> 
-  mutate(logArea = log(Area),
+  mutate(Area = exp(logArea),
          logDist = log(Dist))
 
 tmp = predict(modelNB02, newdata = pdata, se = T)
 pdata = bind_cols(pdata, tmp)
+
+pdata = pdata |> 
+  mutate(expect = exp(fit),
+         l95 = exp(fit - 1.96 * se.fit),
+         u95 = exp(fit + 1.96 * se.fit))
 
 ggplot(gala) + 
   geom_point(aes(x = logArea, y = NS)) +
   geom_line(
     aes(
       x = logArea,
-      y = fit,
-      color = Dist
-    )
+      y = expect,
+      color = factor(Dist)
+    ),
+    data= pdata
   )
+
+
+
+
+
+pdata = gala |> 
+  expand(logArea = seq(min(logArea), max(logArea), length = 21),
+         logDist = mean(logDist)) |> 
+  mutate(Area = exp(logArea),
+         Dist = exp(logDist))
+
+tmp = predict(modelNB02, newdata = pdata, se = T)
+pdata = bind_cols(pdata, tmp)
+
+pdata = pdata |> 
+  mutate(expect = exp(fit),
+         l95 = exp(fit - 1.96 * se.fit),
+         u95 = exp(fit + 1.96 * se.fit))
+
+ggplot(gala) + 
+  geom_ribbon(
+    aes(
+      x = logArea,
+      ymin = l95, 
+      ymax = u95
+    ),
+    data = pdata,
+    alpha = 0.2
+  ) +
+  geom_point(aes(x = logArea, y = NS)) +
+  geom_line(
+    aes(
+      x = logArea,
+      y = expect,
+      color = factor(Dist)
+    ),
+    data= pdata
+  ) +
+  guides(color = "none")
 
 
 
