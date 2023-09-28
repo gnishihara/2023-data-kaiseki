@@ -170,3 +170,36 @@ ggplot(gala) +
     )
   )
 
+summary(modelP01)
+
+# モデル改良２
+# 変数毎の平均値、標準偏差、最小値、最大値
+gala |> 
+  select(-qres, -fit) |> 
+  pivot_longer(cols = everything()) |> 
+  group_by(name) |> 
+  summarise(m = mean(value),
+            s = sd(value),
+            min = min(value),
+            max = max(value))
+
+gala |> 
+  select(-qres, -fit) |> 
+  mutate(logArea = log(Area),
+         logDist = log(Dist),
+         logElev = log(Elevation)) |> 
+  pivot_longer(cols = everything()) |> 
+  group_by(name) |> 
+  summarise(m = mean(value),
+            s = sd(value),
+            min = min(value),
+            max = max(value))
+
+# Area, Dist, Elev を log() 変換してから、
+# 解析する
+
+gala = gala |> mutate(logArea = log(Area),
+               logDist = log(Dist),
+               logElev = log(Elevation))
+
+
