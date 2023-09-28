@@ -15,5 +15,41 @@ data(galapagos, package = "alr4")
 gala = galapagos |> 
   as_tibble(rownames = "island")
 
+gala = gala |> 
+  drop_na() |> 
+  select(-EM, -island, -ES)
+
+gala |> 
+  pivot_longer(
+    cols = c(
+      Area, Anear, Dist, DistSC, 
+      Elevation
+    )
+    ) |> 
+  ggplot() + 
+  geom_point(
+    aes(
+      x = value,
+      y = NS
+    )
+  ) +
+  facet_wrap(
+    vars(name),
+    scales = "free_x"
+  )
+
+###############################################
+# mu = Anear + Area + Dist + DistSC + Elevation
+# NS ~ N(mu, sigma)
+###############################################
+
+modelNF = glm(NS ~ Anear + Area + Dist + DistSC + Elevation,
+              data = gala,
+              family = gaussian("identity"))
+plot(modelNF)
+
+
+
+
 
 
