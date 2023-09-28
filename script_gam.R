@@ -12,5 +12,120 @@ library(mgcv)   # GAM用パッケージ
 
 library(statmod) # ランダム化残差用
 
-dset = CO2 |> as_tibble() 
-dset
+# C と O は大文字
+dset = CO2 |> as_tibble()
+
+ggplot(dset) + 
+  geom_point(
+    aes(
+      x = conc,
+      y = uptake,
+      color = Plant
+    )
+  ) +
+  geom_line(
+    aes(
+      x = conc,
+      y = uptake,
+      color = Plant
+    )
+  )
+
+##
+# GAM 
+
+m1 = gam(uptake ~ conc, data = dset)
+pdata = dset  |> 
+  expand(conc = seq(min(conc),
+                    max(conc),
+                    length = 21))
+tmp = predict(m1, 
+              newdata = pdata,
+              se = T) |> as_tibble()
+pdata = bind_cols(pdata, tmp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
